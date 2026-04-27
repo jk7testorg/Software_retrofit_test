@@ -1,108 +1,5 @@
-# apiVersion: scaffolder.backstage.io/v1beta3
-# kind: Template
-
-# metadata:
-#   name: retrofit-jenkins-argocd
-#   title: Inject CI/CD into Existing Repo
-#   description: Inject Jenkins CI + ArgoCD deployment into an existing repository
-
-# spec:
-#   owner: development
-#   type: service
-
-#   parameters:
-#   - title: Select Existing Repository
-#     required:
-#       - repoUrl
-#       - component_id
-#       - environment
-
-#     properties:
-
-#       repoUrl:
-#         title: Repository
-#         type: string
-#         ui:field: RepoUrlPicker
-#         ui:options:
-#           allowedHosts:
-#             - github.com
-#           allowedOwners:
-#             - BackstageSSPPoC
-#           # requestUserCredentials:
-#           #   secretsKey: USER_OAUTH_TOKEN
-
-#       component_id:
-#         title: Component Name
-#         type: string
-#         description: Keep same as repo name
-
-#       environment:
-#         title: Environment
-#         type: string
-#         enum:
-#           - dev
-#           - prod
-
-#   steps:
-
-#     # ✅ 1. Fetch SAME template content
-#     - id: fetch-base
-#       name: Fetch Template Files
-#       action: fetch:template
-#       input:
-#         url: ./template
-#         values:
-#           app_name: ${{ parameters.component_id }}
-#           app_env: ${{ parameters.environment }}
-
-#     # ✅ 2. Inject into EXISTING repo via PR
-#     - id: inject-ci-cd
-#       name: Inject CI/CD via Pull Request
-#       action: publish:github:pull-request
-#       input:
-#         repoUrl: ${{ parameters.repoUrl }}
-#         # token: ${{ secrets.USER_OAUTH_TOKEN }}
-#         branchName: backstage-integration-${{ parameters.component_id }}
-#         title: "Add Jenkins + ArgoCD CI/CD"
-#         description: |
-#           This PR adds:
-#           - Jenkinsfile
-#           - Dockerfile
-#           - catalog-info.yaml
-#           - Kubernetes manifests
-#         sourcePath: ./        # fetched files
-#         targetPath: ./        # repo root
-
-#     # ✅ 3. Register in Backstage Catalog
-#     # - id: register
-#     #   name: Register Existing Repo
-#     #   action: catalog:register
-#     #   input:
-#     #     repoContentsUrl: ${{ steps['inject-ci-cd'].output.repoContentsUrl }}
-#     #     catalogInfoPath: "/catalog-info.yaml"
-
-#     # ✅ 4. Create GitOps PR (REUSE YOUR EXISTING LOGIC)
-#     - id: create-k8s-folder
-#       name: Create K8s Manifests Folder
-#       action: publish:github:pull-request
-#       input:
-#         repoUrl: github.com?owner=BackstageSSPPoC&repo=k8s-manifests
-#         branchName: create-${{ parameters.component_id }}
-#         title: "Add artifact for ${{ parameters.component_id }}"
-#         description: "This PR creates Kubernetes artifact for ${{ parameters.component_id }}"
-#         sourcePath: ./manifest-templates
-#         targetPath: apps/${{ parameters.component_id }}
-
-#   output:
-#     links:
-#       - title: Pull Request
-#         url: ${{ steps['inject-ci-cd'].output.remoteUrl }}
-
-
-
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
-
 metadata:
   name: retrofit-jenkins-argocd
   title: Integrating CI/CD Into Existing Repo
@@ -111,24 +8,20 @@ metadata:
 spec:
   owner: development
   type: service
-
   parameters:
     - title: Select Repo
       required:
         - repo
         - component_id
-  
-      properties:
 
+      properties:
         repo:
           title: Select Repository
           type: string
           # ui:field: RepoDropdown
-
         component_id:
           title: Component Name
           type: string
-
         environment:
           title: Environment
           type: string
@@ -136,7 +29,6 @@ spec:
             - dev
             - prod
   steps:
-
     - id: fetch-base
       name: Fetch Template Files
       action: fetch:template
@@ -145,7 +37,7 @@ spec:
         values:
           app_name: ${{ parameters.component_id }}
           app_env: ${{ parameters.environment }}
-
+          
     # - id: register
     #   name: Register in Catalog
     #   action: catalog:register
