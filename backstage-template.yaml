@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: retrofit-jenkins-argocd
-  title: Integrating CI/CD Into Existing Repo
+  title: Integrating CI/CD Into Existing Repo (new)
   description: Inject CI/CD directly into Desired Repo/Branch
 
 spec:
@@ -42,7 +42,7 @@ spec:
     #   name: Register in Catalog
     #   action: catalog:register
     #   input:
-    #     repoContentsUrl: https://github.com/BackstageSSPPoC/${{ parameters.repo }}/blob/main
+    #     repoContentsUrl: https://github.com/jk7testorg/${{ parameters.repo }}/blob/main
     #     catalogInfoPath: /catalog-info.yaml
     #     optional: true
 
@@ -50,7 +50,7 @@ spec:
       name: Inject CI/CD Directly
       action: github:push
       input:
-        repoUrl: github.com?owner=BackstageSSPPoC&repo=${{ parameters.repo }}
+        repoUrl: github.com?owner=jk7testorg&repo=${{ parameters.repo }}
         branch: main
         commitMessage: "chore: inject CI/CD template"
         sourcePath: ./
@@ -58,4 +58,4 @@ spec:
   output:
     links:
       - title: View Repository
-        url: https://github.com/BackstageSSPPoC/${{ parameters.repo }}/tree/main
+        url: https://github.com/jk7testorg/${{ parameters.repo }}/tree/main
