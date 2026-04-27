@@ -353,7 +353,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv('Jay Sonarqube') {
                     sh '''
                     npx sonar-scanner \
                       -Dsonar.projectKey=${APP_NAME} \
@@ -388,7 +388,7 @@ pipeline {
             }
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-credentials',
+                    credentialsId: 'jk7-dockerhub-credentials',
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
@@ -411,7 +411,7 @@ pipeline {
                 expression { env.RUN_MODE == "cd" }
             }
             steps {
-                withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+                withCredentials([string(credentialsId: 'jk7-github-token', variable: 'GITHUB_TOKEN')]) {
                     sh '''
                     rm -rf k8s-manifests
     
